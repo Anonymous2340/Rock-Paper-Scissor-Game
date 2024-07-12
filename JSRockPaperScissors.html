@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Basic Rock Paper Scissors Logic</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: auto;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #102a43;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .container h3 {
+            font-size: 40px;
+            font-weight: 500;
+            color: #ccc;
+            margin: 10px auto 40px auto;
+        }
+
+        .container .game-buttons {
+            width: inherit;
+            height: auto;
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .game-buttons button {
+            width: auto;
+            height: auto;
+            font-size: 7em;
+            border: 1px solid white;
+            outline: none;
+            border-radius: 100%;
+            padding: 30px 40px;
+            margin: 5px;
+            color: #f4deb3;
+            background: none;
+        }
+
+        .game-buttons button:focus {
+            background: #ccc;
+        }
+
+        .container #score {
+            width: inherit;
+            height: auto;
+            font-size: 26px;
+            margin: 25px auto;
+            color: #00ff00;
+        }
+
+        .container .reset-show-buttons {
+            width: inherit;
+            height: auto;
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .reset-show-buttons button {
+            width: auto;
+            height: auto;
+            padding: 10px;
+            font-size: 1.4em;
+            font-weight: 600;
+            border: 1px solid #ccc;
+            margin: 4px;
+            background: transparent;
+            color: #ccc;
+            border-radius: 13px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h3>Rock Paper Scissors</h3>
+    <div class="game-buttons">
+        <button id="rock"><i class="fas fa-hand-rock" aria-hidden="true"></i></button>
+        <button id="paper"><i class="fas fa-hand-scissors" aria-hidden="true"></i></button> 
+        <button id="scissor"><i class="fas fa-hand-paper" aria-hidden="true"></i></button>    
+    </div>
+    <div id="score"></div>
+    <div class="reset-show-buttons">    
+        <button id="reset">Reset Game</button>
+        <button id="show-scores">Show Last Scores</button>
+    </div>
+    </div>
+</body>
+<script>
+    "use strict";
+
+    // process of the game (logic);
+    // first, create event listener for the document load (DOMContentLoaded);
+    // second, access the the buttons, and the score board element
+    // third, create event listeners for these buttons
+    // fourth, create functions containing logic of the computers moves (through random numbers) and comparison(for the person and computer's moves)
+    // fifth, create a score reference object for updating scores
+    // sixth, inside the button's event listeners, invoke the functions and include necessary parameters to compare
+    // seventh, inside the invoked comparison function, increment score of who wins, decrement who loss and equal if tie (update score ref object)
+    // eight, create a function to store the object scoring reference inside the localStorage of the browser (convert to string using JSON.stringify() method)
+    // ninth, convert the stored and converted string object back into JavaScript object and return inside the button's event listener to display per click
+    // last, create a reset button that clears up the localStorage, and a show score accessing the scores set inside the local storage with some conditions of the current ranking
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+    
+    const rockBTN = document.getElementById("rock");
+    const paperBTN = document.getElementById("paper");
+    const scissorsBTN = document.getElementById("scissor");
+    const resetGame = document.getElementById("reset");
+    const scoreBoard = document.getElementById("score");
+    const showLastScores = document.getElementById("show-scores");
+
+    // create object reference for scores to insert in the local storage
+    const scoreReference = {
+        personScore: 0,
+        computerScore: 0,
+    };
+
+    // in each button display the score in the showLastScores variable DOM
+    // display the scores starting zero;
+    scoreBoard.textContent = `You're score is: ${0}. Bot's score is : ${0}.`;
+
+    // create game logic using if else if statements with conditions
+    // call these functions to the eventListener to work
+
+    // set the localStorage and use the object scoring reference to avoid score object null
+    function setStorage(scoreRef) {
+        let scoring = localStorage.setItem("scoring", JSON.stringify(scoreRef));
+        console.log(JSON.parse(localStorage.getItem("scoring")));
+        return JSON.parse(localStorage.getItem("scoring"));
+    }
+    
+    // make random number moves from the computer
+    function computerMove() {
+        let randomComMove = Math.floor(Math.random() * 3);
+        
+        if (!randomComMove) {
+            return 'Rock';
+        } else if (randomComMove === 1) {
+            return 'Scissors';
+        } else if (randomComMove === 2) {
+            return 'Paper';
+        };
+    };
+
+    // compare the person's move and the computer's move
+    function compare(computer, person, obj)   {
+        if (computer === 'Rock' && person === 'Paper' ||
+            computer === 'Scissors' && person === 'Rock' ||
+            computer === 'Paper' && person === 'Scissors'
+        ) {
+            alert(`You chose ${person}. The computer chosed ${computer}. The result is You Win!`);
+            obj.personScore++;
+            obj.computerScore--;
+        } else if (computer === 'Rock' && person === 'Scissors' ||
+            computer === 'Paper' && person === 'Rock' ||
+            computer === 'Scissors' && person == 'Paper'
+        ) {
+            alert(`You chose ${person}. The computer chosed ${computer}. The result is You Lose!`);
+            obj.personScore--;
+            obj.computerScore++;
+        } else {
+            alert(`You chose ${person}. The computer chosed ${computer}. The result is a Tie!`);
+            obj.personScore = obj.personScore; // not change
+            obj.computerScore = obj.computerScore; // not change
+        }
+    }
+
+    // choose rock
+    rockBTN.addEventListener("click", ()=>{
+        const personMove = 'Rock'; // set the default person's move (chosed)
+        compare(computerMove(), personMove, scoreReference); // ivoke the compare and pass the computers move (invoke), persons move, and object reference
+        const scoreObj = setStorage(scoreReference); // fetch the updated object reference and pass it to the setStorage to store in localStorage
+        scoreBoard.textContent = // fetch the returned converted version of the string localStorage into JavaScript Object and reuse for display score
+        `You're score is: ${scoreObj.personScore}.  
+        Bot's score is : ${scoreObj.computerScore}.`;
+    });
+
+    
+    // choose paper
+    paperBTN.addEventListener("click", ()=>{
+        const personMove = 'Paper';
+        compare(computerMove(), personMove, scoreReference); // ivoke the compare and pass the computers move (invoke), persons move, and object reference
+        const scoreObj = setStorage(scoreReference); // fetch the updated object reference and pass it to the setStorage to store in localStorage
+        scoreBoard.textContent = // fetch the returned converted version of the string localStorage into JavaScript Object and reuse for display score
+        `You're score is: ${scoreObj.personScore}.  
+        Bot's score is : ${scoreObj.computerScore}.`;
+    });
+
+    // choose scissors
+    scissorsBTN.addEventListener("click", ()=>{
+        const personMove = 'Paper';
+        compare(computerMove(), personMove, scoreReference); // ivoke the compare and pass the computers move (invoke), persons move, and object reference
+        const scoreObj = setStorage(scoreReference); // fetch the updated object reference and pass it to the setStorage to store in localStorage
+        scoreBoard.textContent = // fetch the returned converted version of the string localStorage into JavaScript Object and reuse for display score
+        `You're score is: ${scoreObj.personScore}.  
+        Bot's score is : ${scoreObj.computerScore}.`;
+
+    });
+
+    // reset the game scores inside localStorage
+    resetGame.addEventListener("click", ()=>{
+        localStorage.clear();
+    });
+
+    // show last scores using localStorage
+    showLastScores.addEventListener("click", ()=>{
+        let currentScore = JSON.parse(localStorage.getItem("scoring"));
+        let currentRank = (currentScore) => {
+            if (currentScore.personScore < currentScore.computerScore) {
+                return `YOU ARE LOSING!`;
+            } else if (currentScore.personScore > currentScore.computerScore) {
+                return `YOU ARE WINNING!`;
+            } else if (currentScore.personScore === currentScore.computerScore) {
+                return `BOTH OF YOU ARE TIE!`;
+            };
+        };
+        
+        if (!currentScore) {
+            alert("THERE IS NO SCORES YET. PLAY FIRST YOU IDIOT!");
+        };
+        alert(`You're score was: ${currentScore.personScore}, Computer's score was: ${currentScore.computerScore} and ${currentRank(currentScore)}.`);
+    });
+});
+</script>
+</html>
